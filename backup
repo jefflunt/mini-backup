@@ -1,0 +1,18 @@
+#!/bin/bash
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage"
+  echo "  backup <user@hostname OR ssh-alias> <catalog file> <dest. folder>"
+else
+  cat $2 | while read line; do
+    SHA=$(echo $line | cut -f1 -d ' ')
+    FTMP=$(echo $line | cut -c66-)
+    FILENAME=$(printf %q "$FTMP")
+
+    DEST=$3$SHA
+
+    if [ ! -f "$DEST" ]; then
+      scp $1:"$FILENAME" $DEST
+    fi
+  done
+fi
