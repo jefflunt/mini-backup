@@ -1,18 +1,21 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 2 ]; then
   echo "Usage"
-  echo "  backup <user@hostname OR ssh-alias> <catalog file> <dest. folder>"
+  echo "  backup <catalog file> <dest. folder>"
 else
-  cat $2 | while read line; do
+  CREDENTIALS=$(head -n 1 $1)
+  HOST=$(echo $CREDENTIALS | cut -d ':' -f 1)
+
+  tail -n +2 $1 | while read line; do
     SHA=$(echo $line | cut -f1 -d ' ')
     FTMP=$(echo $line | cut -c66-)
     FILENAME=$(printf %q "$FTMP")
 
-    DEST=$3$SHA
+    DEST=$2$SHA
 
     if [ ! -f "$DEST" ]; then
-      scp $1:"$FILENAME" $DEST
+      scp $HOST:"$FILENAME" $DEST
     fi
   done
 fi
