@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ "$#" -ne 2 ]; then
+  echo "Usage"
+  echo "  catalog <user@hostname OR ssh-alias> <folder on host>"
+else
+  FIND_CMD="find $2 -not -type d"
+  WHILE_CMD='while read f; do shasum -a 256 "$f"; done'
+  CMD="$FIND_CMD | $WHILE_CMD"
+
+  ssh $1 "$CMD"
+fi
