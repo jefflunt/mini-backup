@@ -51,18 +51,23 @@ file.
 ## Restore
 
 ```shell
-restore <catalog file>
+restore <catalog file> [-d destination] [-p pick a file/folder pattern] [-f flat]
 ```
 
 Ex:
 
 ```shell
-restore fileserver-catalog.txt
+restore fileserver-catalog.txt -p my-favorite-song.mp3 - d ./
 ```
+If you run the `restore` command with only a catalog file, the restored files
+will go back to the system and folder they came from.
 
-It's not necessary to specify the destination of the restore action. By default
-it will go back to the same place it came from.
-
-It's understood that this is insufficient for many restore actions -- many times
-a backup restore actually needs to go to a new destination. Support for a
-custom restore destination might be added in a future version.
+* `-d` specify where the restored files should go (i.e. to restore them locally,
+  or to an alternate destination
+* `-p` specify a pattern (i.e. regex) that will be used to match files from the
+  catalog to restore
+* `-f` flat restore - by default the `restore` command will recreate the folder
+  structure from the catalog to your destination. If you specify `-f` a flat
+  (no-folder) restore will be done instead. **NOTE** that if you have files with
+  the same name nested in multiple places that you're restoring, that this may
+  result in some restored files overwriting others.
