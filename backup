@@ -21,6 +21,9 @@ else
       if [ "$SHA" != "$COPY_SHA" ]; then
         echo "FAIL: $DEST"
       fi
+
+      tar -czf $DEST.tar.gz $DEST
+      mv $DEST.tar.gz $DEST
     fi
   done
 fi
