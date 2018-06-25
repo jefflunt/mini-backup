@@ -1,0 +1,27 @@
+#!/bin/bash
+
+if [ "$#" -ne 3 ]; then
+  echo "Usage"
+  echo "  restore <catalog file> <backup file source> <outfile>"
+else
+  CATALOG=$1
+  SRC=$2
+  FILE=$3
+
+  LINE=$(fgrep "$FILE" $CATALOG)
+  SHA=$(echo $LINE | cut -d ' ' -f 1)
+  FTMP=$(echo $LINE | cut -c66-)
+  FILENAME=$(printf %q "$FTMP")
+  BASE=$(basename "$FILENAME")
+
+#  echo $CATALOG
+#  echo $SRC
+#  echo $FILE
+#  echo $LINE
+#  echo $SHA
+#  echo $FILENAME
+  echo $BASE
+
+  tar -xzf $SRC$SHA.tar.gz
+  mv $SRC$SHA "$BASE"
+fi
