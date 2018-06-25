@@ -1,3 +1,5 @@
+Why not use `rsync`? Good question. You probably should.
+
 ## Catalog your files
 
 ```shell
