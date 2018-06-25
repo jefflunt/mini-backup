@@ -14,7 +14,7 @@ else
 
     DEST=$2$SHA
 
-    if [ ! -f "$DEST" ]; then
+    if [ ! -f "$DEST.tar.gz" ]; then
       scp $HOST:"$FILENAME" $DEST
       COPY_SHA=$(shasum -a 256 $DEST | cut -f 1 -d ' ')
 
@@ -23,7 +23,7 @@ else
       fi
 
       tar -czf $DEST.tar.gz $DEST
-      mv $DEST.tar.gz $DEST
+      rm $DEST
     fi
   done
 fi
