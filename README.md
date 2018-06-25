@@ -32,7 +32,7 @@ are used for a few things:
   avoiding copying files that appear to have already been backed up can be
   skipped, which makes incremental backups much faster.
 
-## Back up the cataloged files
+## Backup the cataloged files
 
 ```shell
 backup <catalog file> <dest. folder>
