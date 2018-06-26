@@ -2,17 +2,7 @@
 
 if [ "$#" -ne 1 ]; then
   echo "Usage"
-  echo "  catalog <ssh user@hostname:/path/to/backup>"
-  echo
-  echo "Output is to STDOUT. It is recommended that you redirect the output to a file."
+  echo "  catalog /folder/to/catalog"
 else
-  CREDENTIALS=$(echo $1 | cut -d ':' -f 1)
-  FOLDER=$(echo $1 | cut -d ':' -f 2)
-  echo "$1"
-
-  FIND_CMD="find $FOLDER -not -type d"
-  WHILE_CMD='while read f; do shasum -a 256 "$f"; done'
-  CMD="$FIND_CMD | $WHILE_CMD"
-
-  ssh $CREDENTIALS $CMD
+  find $1 -not -type d | while read f; do shasum -a 256 "$f"; done
 fi

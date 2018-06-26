@@ -2,28 +2,24 @@
 
 if [ "$#" -ne 2 ]; then
   echo "Usage"
-  echo "  backup <catalog file> <dest. folder>"
+  echo "  backup catalog-file destination-folder>"
 else
-  CREDENTIALS=$(head -n 1 $1)
-  HOST=$(echo $CREDENTIALS | cut -d ':' -f 1)
-
-  tail -n +2 $1 | while read line; do
+  cat $1 | while read line; do
     SHA=$(echo $line | cut -f 1 -d ' ')
-    FTMP=$(echo $line | cut -c66-)
-    FILENAME=$(printf %q "$FTMP")
+    FILENAME="$(echo $line | cut -c66-)"
 
     DEST=$2$SHA
 
     if [ ! -f "$DEST.tar.gz" ]; then
-      scp $HOST:"$FILENAME" $DEST
+      cp "$FILENAME" $DEST
+
       COPY_SHA=$(shasum -a 256 $DEST | cut -f 1 -d ' ')
-
       if [ "$SHA" != "$COPY_SHA" ]; then
-        echo "FAIL: $DEST"
+        echo "FAIL: $FILENAME"
+      else
+        tar -czf $DEST.tar.gz $DEST
+        rm $DEST
       fi
-
-      tar -czf $DEST.tar.gz $DEST
-      rm $DEST
     fi
   done
 fi

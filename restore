@@ -2,26 +2,19 @@
 
 if [ "$#" -ne 3 ]; then
   echo "Usage"
-  echo "  restore <catalog file> <backup file source> <outfile>"
+  echo "  restore catalog-file backups-folder destination-folder"
 else
   CATALOG=$1
-  SRC=$2
-  FILE=$3
+  BCK=$2
+  DEST=$3
 
-  LINE=$(fgrep "$FILE" $CATALOG)
-  SHA=$(echo $LINE | cut -d ' ' -f 1)
-  FTMP=$(echo $LINE | cut -c66-)
-  FILENAME=$(printf %q "$FTMP")
-  BASE=$(basename "$FILENAME")
+  cat $1 | while read line; do
+    SHA=$(echo $line | cut -d ' ' -f 1)
+    FILENAME="$(echo $line | cut -c66-)"
+    FOLDER=$(dirname "$FILENAME")
+    BASE=$(basename "$FILENAME")
 
-#  echo $CATALOG
-#  echo $SRC
-#  echo $FILE
-#  echo $LINE
-#  echo $SHA
-#  echo $FILENAME
-  echo $BASE
-
-  tar -xzf $SRC$SHA.tar.gz
-  mv $SRC$SHA "$BASE"
+    mkdir -p "$DEST/$FOLDER"
+    tar -xOzf $BCK/$SHA.tar.gz > "$DEST/$FOLDER/$BASE"
+  done
 fi
