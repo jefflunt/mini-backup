@@ -1,21 +1,28 @@
 Two simple utilities:
 
-### `backup source-folder destination-folder`
+```bash
+backup source-folder destination-folder
+```
 
-Make a de-duplicated, compressed backup of the entire folder structure in
-`source-folder` in `destination-folder`. Inside of `destination-folder` you will
-find a folder called `catalogs` where a catalog of what was backed up will be
-recorded. YOU NEED THIS CATALOG IN ORDER TO RESTORE.
+Make a de-duplicated, compressed backup of the entire folder structure from
+`source-folder` to `destination-folder`. Inside of `destination-folder` you will
+find a sub-folder called `catalogs` where a catalog of what was backed up will
+be recorded. YOU NEED THIS CATALOG IN ORDER TO RESTORE.
 
-### `restore catalog-file destination-folder`
+```bash
+restore catalog-file destination-folder
+```
 
 Take a catalog file generated using the `backup` command, and restore the files
 in that catalog to a `destination-folder.
 
 ## WARNING
 
-!!! It's critical that you keep your catalog files !!! You cannot restore the
-data without them, and what good is a backup without the ability to restore?
+IN ORDER TO RESTORE FROM BACKUPS:
+
+You must keep the `.catalog` files. Do not move, rename, or alter them in any
+way. They are intended to be managed entirely by the `backup`/`restore`
+utilities.
 
 ## Example usage
 
