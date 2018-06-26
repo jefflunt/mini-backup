@@ -1,28 +1,16 @@
-Three simple utilities:
+Two simple utilities:
 
-### `catalog`
+### `backup source-folder destination-folder`
 
-Make a catalog of files in a given folder, and all sub-folders, recording the
-SHA256 for each file. Record it all in an output file.
+Make a de-duplicated, compressed backup of the entire folder structure in
+`source-folder` in `destination-folder`. Inside of `destination-folder` you will
+find a folder called `catalogs` where a catalog of what was backed up will be
+recorded. YOU NEED THIS CATALOG IN ORDER TO RESTORE.
 
-### `backup`
+### `restore catalog-file destination-folder`
 
-Take a catalog file using the `catalog` command, and backup the files in that
-catalog to a destination folder.
-
-Backed up files are de-duplicated, and compressed using GZip.
-
-Running the exact same `backup` command, with the same backup destination as a
-previous backup will result is an incremental backup. If nothing has changed,
-then the incremental backup should be relatively quick.
-
-### `restore`
-
-Take a catalog file generated using the `catalog` command, and restore the files
-in that catalog to a destination folder.
-
-Restored files are decrypted, decompressed using GZip, and finally
-re-duplicated.
+Take a catalog file generated using the `backup` command, and restore the files
+in that catalog to a `destination-folder.
 
 ## WARNING
 
@@ -33,8 +21,8 @@ data without them, and what good is a backup without the ability to restore?
 
 ```shell
 catalog music/ music.catalog
-backup music.catalog backups/
-restore music.catalog backups/ restored-files/
+backup music/ backups/
+restore 20180625.120100.music.catalog music-restore/
 ```
 
 The above commands will do the following:

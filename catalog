@@ -1,8 +1,0 @@
-#!/bin/bash
-
-if [ "$#" -ne 2 ]; then
-  echo "Usage"
-  echo "  catalog /folder/to/catalog catalog-file"
-else
-  find $1 -not -type d | while read f; do echo $(shasum -a 256 "$f") >> $2; done
-fi

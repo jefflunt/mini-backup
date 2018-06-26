@@ -1,20 +1,21 @@
 #!/bin/bash
 
-if [ "$#" -ne 3 ]; then
+if [ "$#" -ne 2 ]; then
   echo "Usage"
-  echo "  restore catalog-file backups-folder destination-folder"
+  echo "  restore catalog-file destination-folder"
 else
   CATALOG=$1
-  BCK=$2
-  DEST=$3
+  BCK=`dirname $(dirname $CATALOG)`
+  DST=$2
 
-  cat $1 | while read line; do
+  mkdir -p $DST
+  cat $CATALOG | while read line; do
     SHA=$(echo $line | cut -d ' ' -f 1)
-    FILENAME="$(echo $line | cut -c66-)"
-    FOLDER=$(dirname "$FILENAME")
-    BASE=$(basename "$FILENAME")
+    BCK_FILE="$(echo $line | cut -c66-)"
+    FOLDER=$(dirname "$BCK_FILE")
+    BASE=$(basename "$BCK_FILE")
 
-    mkdir -p "$DEST/$FOLDER"
-    tar -xOzf $BCK/$SHA.tar.gz > "$DEST/$FOLDER/$BASE"
+    mkdir -p "$DST/$FOLDER"
+    tar -xOzf $BCK/$SHA.tar.gz > "$DST/$FOLDER/$BASE"
   done
 fi

@@ -2,23 +2,35 @@
 
 if [ "$#" -ne 2 ]; then
   echo "Usage"
-  echo "  backup catalog-file destination-folder>"
+  echo "  backup source-folder destination-folder"
 else
-  cat $1 | while read line; do
-    SHA=$(echo $line | cut -f 1 -d ' ')
-    FILENAME="$(echo $line | cut -c66-)"
+  # Catalog
+  TIMESTAMP=$(date '+%Y%m%d.%H%M%S')
+  SRC=$1
+  DST=$2
 
-    DEST=$2$SHA
+  mkdir -p $DST/catalogs
+  CATALOG_FILE="$DST/catalogs/$TIMESTAMP.$(basename $SRC).catalog"
+  find $SRC -not -type d | while read f; do
+    echo $(shasum -a 256 "$f") >> $CATALOG_FILE
+  done
 
-    if [ ! -f "$DEST.tar.gz" ]; then
-      cp "$FILENAME" $DEST
+  # Backup
+  cat $CATALOG_FILE | while read LINE; do
+    SHA=$(echo $LINE | cut -f 1 -d ' ')
+    SRC_FILE="$(echo $LINE | cut -c66-)"
 
-      COPY_SHA=$(shasum -a 256 $DEST | cut -f 1 -d ' ')
+    DST_FILE=$DST$SHA
+
+    if [ ! -f "$DST_FILE.tar.gz" ]; then
+      cp "$SRC_FILE" $DST_FILE
+
+      COPY_SHA=$(shasum -a 256 $DST_FILE | cut -f 1 -d ' ')
       if [ "$SHA" != "$COPY_SHA" ]; then
-        echo "FAIL: $FILENAME"
+        echo "FAIL: $SRC_FILE"
       else
-        tar -czf $DEST.tar.gz $DEST
-        rm $DEST
+        tar -czf $DST_FILE.tar.gz $DST_FILE
+        rm $DST_FILE
       fi
     fi
   done
