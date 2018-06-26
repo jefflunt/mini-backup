@@ -1,61 +1,22 @@
-Why not use `rsync`? Good question. You probably should.
+Three simple utilities:
 
-## Catalog your files
+`catalog`
 
-```shell
-catalog <user@hostname OR ssh-alias>:<folder on host>
-```
+Make a catalog of files in a given folder, and all sub-folders, recording the
+SHA256 for each file. Record it all in a file.
 
-Ex:
+`backup`
 
-```shell
-catalog admin@fileserver:/home/fileserver/ > fileserver-catalog.txt
-```
+Take a catalog file generated using the `catalog` command, and backup the files
+in that catalog to a destination folder.
 
-This will create a file where the first line mentions the username and host used
-to create the catalog. Each subsequent line shows a space-delimited line of two
-elements:
+Backed up files are de-duplicated, compressed using GZip, and finally encrypted
+using GnuGP.
 
-* A SHA256 hash
-* The file associated with the hash
+`restore`
 
-This catalog can be used to backup the files named in the catalog. The hashes
-are used for a few things:
+Take a catalog file generated using the `catalog` command, and restore the files
+in that catalog to a destination folder.
 
-* To verify copied files, to make sure that each of the files was backed up
-  successfully
-* As the filename of the file in the backup
-* De-duplication (because if two files have the same SHA256 hash, it's highly
-  unlikely (though technically not impossible) for two files with different
-  content to have the same hash.
-* When you backup a folder you've backed up previously to the same destination,
-  avoiding copying files that appear to have already been backed up can be
-  skipped, which makes incremental backups much faster.
-
-## Backup the cataloged files
-
-```shell
-backup <catalog file> <dest. folder>
-```
-
-Ex:
-
-```shell
-backup fileserver-catalog.txt /backups/
-```
-
-It's not necessary to specify the username and host when backing up from a
-catalog file, because the username and root folder are noted in the catalog
-file.
-
-## Restore
-
-```shell
-restore <catalog file> <backup file source> <outfile>
-```
-
-Ex:
-
-```shell
-restore fileserver-catalog.txt /backups/ "My Favorite Song.mp3"
-```
+Restored files are decrypted, decompressed using GZip, and finally
+re-duplicated.
