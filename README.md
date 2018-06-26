@@ -20,19 +20,17 @@ data without them, and what good is a backup without the ability to restore?
 ## Example usage
 
 ```shell
-catalog music/ music.catalog
 backup music/ backups/
 restore 20180625.120100.music.catalog music-restore/
 ```
 
-The above commands will do the following:
+Running these commands will:
 
-* Catalog all the files and sub-folders/files in `music/`, storing the resulting
-  catalog in `music.catalog`
-* Create backups of files listed in `music.catalog`, storing the de-duplicated,
-  compressed files in `backups/`
-* Restore the files named in `music.catalog` to the `restored-files/` folder.
-
-Running these three steps should produce an exact copy of `music/` in
-`restored-files/`
-
+* `backup`
+  * Create a `backups/` folder if it doesn't exist
+  * Make de-duplicated, compressed versions of all files in the source-folder inside of
+* `restore`
+  * Create a `music-restores/` folder if it doesn't exist
+  * Read the specified catalog file, generated from the `backup` command
+  * Restore an decompressed, re-duplicated version of all files from `music/`
+    to `music-restore/music/`
