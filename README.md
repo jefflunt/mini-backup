@@ -1,3 +1,7 @@
+DEPRECATED March 2023: never really used this beyond some initial investigation.
+
+---
+
 Two simple utilities:
 
 ```bash
